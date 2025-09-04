@@ -270,25 +270,22 @@
             setTimeout(startAnimation, 800);
         });
         
-        // Add click handlers for menu items (you can customize these)
+        // Add click handlers for menu items
         document.querySelectorAll('.menu-item').forEach(item => {
             item.addEventListener('click', (e) => {
                 e.preventDefault();
                 const text = item.textContent;
                 
-                // Add your navigation logic here
+                // Navigation logic with actual URLs
                 switch(text.toLowerCase()) {
                     case 'pump.fun':
-                        // window.open('your-pump-fun-url', '_blank');
-                        console.log('Pump.fun clicked');
+                        window.open('https://pump.fun', '_blank');
                         break;
                     case 'twitter':
-                        // window.open('your-twitter-url', '_blank');
-                        console.log('Twitter clicked');
+                        window.open('https://twitter.com/GrokPlaysPoke', '_blank');
                         break;
                     case 'github':
-                        // window.open('your-github-url', '_blank');
-                        console.log('Github clicked');
+                        window.open('https://github.com/ablenesi', '_blank');
                         break;
                     case 'about':
                         // Show about modal or navigate to about page
