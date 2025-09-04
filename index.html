@@ -299,20 +299,6 @@
         function closeAboutModal() {
             document.getElementById('aboutModal').classList.remove('visible');
         }
-
-        // Close modal when clicking outside
-        document.getElementById('aboutModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) {
-                closeAboutModal();
-            }
-        });
-
-        // Close modal with Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeAboutModal();
-            }
-        });
     </script>
 </body>
 </html>
