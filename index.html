@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Style Site</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        /* Loading screen squares */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 1000;
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+        }
+
+        .loading-square {
+            background: #2a4d3a;
+            border: 1px solid #1a3d2a;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-square.fade-out {
+            opacity: 0;
+        }
+
+        /* Background */
+        .background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/68b8e3e1ca1433c95ad2be42_anime-landscape-with-a-field-and-clouds-video.jpg');
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+
+        .background.visible {
+            opacity: 1;
+        }
+
+        /* Floating/breathing gif */
+        .floating-gif {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 1s ease;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .floating-gif.visible {
+            opacity: 1;
+        }
+
+        .floating-gif img {
+            max-width: 300px;
+            height: auto;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(-50%, -50%) translateY(0px);
+            }
+            50% {
+                transform: translate(-50%, -50%) translateY(-15px);
+            }
+        }
+
+        /* Pokemon menu */
+        .pokemon-menu {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(145deg, #4a6741, #2a4d3a);
+            border: 4px solid #1a3d2a;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 
+                inset 2px 2px 4px rgba(255, 255, 255, 0.2),
+                inset -2px -2px 4px rgba(0, 0, 0, 0.5),
+                0 8px 16px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 1s ease 0.5s;
+        }
+
+        .pokemon-menu.visible {
+            opacity: 1;
+        }
+
+        .menu-items {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .menu-item {
+            background: linear-gradient(145deg, #6b8e5a, #4a6741);
+            border: 3px solid #2a4d3a;
+            border-radius: 10px;
+            padding: 12px 20px;
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 
+                inset 1px 1px 2px rgba(255, 255, 255, 0.3),
+                inset -1px -1px 2px rgba(0, 0, 0, 0.3),
+                0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .menu-item:hover {
+            background: linear-gradient(145deg, #7ba05a, #5a7741);
+            transform: translateY(-2px);
+            box-shadow: 
+                inset 1px 1px 2px rgba(255, 255, 255, 0.4),
+                inset -1px -1px 2px rgba(0, 0, 0, 0.4),
+                0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .menu-item:active {
+            transform: translateY(0);
+            box-shadow: 
+                inset 1px 1px 3px rgba(0, 0, 0, 0.4),
+                inset -1px -1px 1px rgba(255, 255, 255, 0.2),
+                0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Disclaimer */
+        .disclaimer {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 10px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 1s ease 1s;
+        }
+
+        .disclaimer.visible {
+            opacity: 1;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .floating-gif img {
+                max-width: 200px;
+            }
+            
+            .menu-items {
+                gap: 15px;
+            }
+            
+            .menu-item {
+                padding: 10px 15px;
+                font-size: 12px;
+            }
+            
+            .pokemon-menu {
+                bottom: 30px;
+                margin: 0 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading screen with squares -->
+    <div class="loading-screen" id="loadingScreen"></div>
+    
+    <!-- Background -->
+    <div class="background" id="background"></div>
+    
+    <!-- Floating/breathing gif -->
+    <div class="floating-gif" id="floatingGif">
+        <img src="https://cdn.prod.website-files.com/6740d85c4e3daeef29a89470/68b8e412f6c0774321ae6432_3dgifmaker69124.gif" alt="Floating Animation">
+    </div>
+    
+    <!-- Pokemon style menu -->
+    <div class="pokemon-menu" id="pokemonMenu">
+        <div class="menu-items">
+            <a href="#" class="menu-item">Pump.fun</a>
+            <a href="#" class="menu-item">Twitter</a>
+            <a href="#" class="menu-item">Github</a>
+            <a href="#" class="menu-item">About</a>
+        </div>
+    </div>
+    
+    <!-- Disclaimer -->
+    <div class="disclaimer" id="disclaimer">
+        Personal project - views do not reflect those of xAI.
+    </div>
+
+    <script>
+        // Create loading squares
+        const loadingScreen = document.getElementById('loadingScreen');
+        const totalSquares = 80; // 10x8 grid
+        
+        for (let i = 0; i < totalSquares; i++) {
+            const square = document.createElement('div');
+            square.className = 'loading-square';
+            loadingScreen.appendChild(square);
+        }
+        
+        const squares = document.querySelectorAll('.loading-square');
+        const background = document.getElementById('background');
+        const floatingGif = document.getElementById('floatingGif');
+        const pokemonMenu = document.getElementById('pokemonMenu');
+        const disclaimer = document.getElementById('disclaimer');
+        
+        // Animate loading squares fading out
+        function startAnimation() {
+            // Show background first
+            setTimeout(() => {
+                background.classList.add('visible');
+            }, 500);
+            
+            // Fade out squares in a wave pattern
+            squares.forEach((square, index) => {
+                setTimeout(() => {
+                    square.classList.add('fade-out');
+                }, index * 50);
+            });
+            
+            // Remove loading screen after all squares fade
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                // Show floating gif
+                floatingGif.classList.add('visible');
+                // Show menu
+                pokemonMenu.classList.add('visible');
+                // Show disclaimer
+                disclaimer.classList.add('visible');
+            }, totalSquares * 50 + 1000);
+        }
+        
+        // Start animation when page loads
+        window.addEventListener('load', () => {
+            setTimeout(startAnimation, 800);
+        });
+        
+        // Add click handlers for menu items (you can customize these)
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const text = item.textContent;
+                
+                // Add your navigation logic here
+                switch(text.toLowerCase()) {
+                    case 'pump.fun':
+                        // window.open('your-pump-fun-url', '_blank');
+                        console.log('Pump.fun clicked');
+                        break;
+                    case 'twitter':
+                        // window.open('your-twitter-url', '_blank');
+                        console.log('Twitter clicked');
+                        break;
+                    case 'github':
+                        // window.open('your-github-url', '_blank');
+                        console.log('Github clicked');
+                        break;
+                    case 'about':
+                        // Show about modal or navigate to about page
+                        console.log('About clicked');
+                        break;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
